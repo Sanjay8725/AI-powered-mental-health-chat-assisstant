@@ -79,6 +79,16 @@ class MindCareViewModel(application: Application) : AndroidViewModel(application
     private val _showBreathingModal = MutableStateFlow(false)
     val showBreathingModal: StateFlow<Boolean> = _showBreathingModal.asStateFlow()
 
+    // Atmosphere & Theme Customization
+    private val _currentAppTheme = MutableStateFlow(com.example.ui.theme.AppColorTheme.NORDIC_SAGE)
+    val currentAppTheme: StateFlow<com.example.ui.theme.AppColorTheme> = _currentAppTheme.asStateFlow()
+
+    private val _isDarkMode = MutableStateFlow(false)
+    val isDarkMode: StateFlow<Boolean> = _isDarkMode.asStateFlow()
+
+    private val _showThemeModal = MutableStateFlow(false)
+    val showThemeModal: StateFlow<Boolean> = _showThemeModal.asStateFlow()
+
     // Moods
     private val _moods = MutableStateFlow<List<MoodEntity>>(emptyList())
     val moods: StateFlow<List<MoodEntity>> = _moods.asStateFlow()
@@ -229,6 +239,19 @@ class MindCareViewModel(application: Application) : AndroidViewModel(application
 
     fun toggleBreathingModal(show: Boolean) {
         _showBreathingModal.value = show
+    }
+
+    fun setAppColorTheme(theme: com.example.ui.theme.AppColorTheme) {
+        _currentAppTheme.value = theme
+        _snackBarMessage.value = "Atmosphere changed to ${theme.displayName} ${theme.emoji}"
+    }
+
+    fun toggleDarkMode(enabled: Boolean) {
+        _isDarkMode.value = enabled
+    }
+
+    fun toggleThemeModal(show: Boolean) {
+        _showThemeModal.value = show
     }
 
     fun recordMood(mood: String, score: Int, note: String) {

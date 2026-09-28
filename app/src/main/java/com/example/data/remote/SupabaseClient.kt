@@ -3,6 +3,7 @@ package com.example.data.remote
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.data.local.entity.DatasetItemEntity
+import com.example.data.local.entity.MoodEntity
 import com.example.data.local.entity.UserEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,6 +13,10 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 
@@ -293,6 +298,90 @@ class SupabaseClient(context: Context) {
                         safetyLevel = obj.optString("safety_level", "safe"),
                         source = obj.optString("source", "supabase_remote"),
                         importedAt = obj.optLong("imported_at", System.currentTimeMillis())
+                    )
+                )
+            }
+            Result.success(list)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    // 7. PostgREST: Push individual mood entry to Supabase database with timestamp
+    suspend fun syncMoodToSupabase(mood: MoodEntity): Result<Unit> = withContext(Dispatchers.IO) {
+        if (!isConfigured) {
+            return@withContext Result.success(Unit) // Offline/Local fallback
+        }
+
+        try {
+            val isoFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US).apply {
+                timeZone = TimeZone.getTimeZone("UTC")
+            }
+            val isoDate = isoFormat.format(Date(mood.createdAt))
+
+            val obj = JSONObject().apply {
+                put("id", mood.id)
+                put("user_id", mood.userId)
+                put("mood", mood.mood)
+                put("score", mood.score)
+                put("note", mood.note)
+                put("created_at", isoDate)
+                put("timestamp", mood.createdAt)
+            }
+
+            val request = Request.Builder()
+                .url("$supabaseUrl/rest/v1/moods")
+                .addHeader("apikey", supabaseAnonKey)
+                .addHeader("Authorization", "Bearer ${currentAuthToken ?: supabaseAnonKey}")
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Prefer", "resolution=merge-duplicates")
+                .post(obj.toString().toRequestBody("application/json".toMediaType()))
+                .build()
+
+            val response = client.newCall(request).execute()
+            if (response.isSuccessful) {
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("Supabase mood sync returned ${response.code}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    // 8. PostgREST: Fetch user's mood entries from Supabase
+    suspend fun fetchRemoteMoods(userId: String): Result<List<MoodEntity>> = withContext(Dispatchers.IO) {
+        if (!isConfigured) {
+            return@withContext Result.success(emptyList())
+        }
+
+        try {
+            val request = Request.Builder()
+                .url("$supabaseUrl/rest/v1/moods?user_id=eq.$userId&order=timestamp.desc&limit=50")
+                .addHeader("apikey", supabaseAnonKey)
+                .addHeader("Authorization", "Bearer ${currentAuthToken ?: supabaseAnonKey}")
+                .get()
+                .build()
+
+            val response = client.newCall(request).execute()
+            val body = response.body?.string().orEmpty()
+
+            if (!response.isSuccessful) {
+                return@withContext Result.failure(Exception("Supabase mood fetch failed: ${response.code}"))
+            }
+
+            val array = JSONArray(body)
+            val list = mutableListOf<MoodEntity>()
+            for (i in 0 until array.length()) {
+                val obj = array.getJSONObject(i)
+                list.add(
+                    MoodEntity(
+                        id = obj.optString("id", UUID.randomUUID().toString()),
+                        userId = obj.optString("user_id", userId),
+                        mood = obj.optString("mood", "Calm"),
+                        score = obj.optInt("score", 3),
+                        note = obj.optString("note", ""),
+                        createdAt = obj.optLong("timestamp", System.currentTimeMillis())
                     )
                 )
             }

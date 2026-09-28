@@ -6,6 +6,7 @@ const rateLimit = require('express-rate-limit');
 const authRoutes = require('./routes/authRoutes');
 const datasetRoutes = require('./routes/datasetRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+const moodRoutes = require('./routes/moodRoutes');
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use('/api', limiter);
 app.use('/api/auth', authRoutes);
 app.use('/api/dataset', datasetRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/moods', moodRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

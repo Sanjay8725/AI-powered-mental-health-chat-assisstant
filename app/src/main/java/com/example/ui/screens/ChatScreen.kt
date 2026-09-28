@@ -36,6 +36,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.HealthAndSafety
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.SelfImprovement
 import androidx.compose.material.icons.filled.Shield
@@ -104,7 +105,8 @@ fun ChatScreen(
     onNewConversation: () -> Unit,
     onDeleteConversation: (String) -> Unit,
     onOpenCrisis: () -> Unit,
-    onOpenBreathing: () -> Unit
+    onOpenBreathing: () -> Unit,
+    onOpenThemeSelector: () -> Unit = {}
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -259,12 +261,19 @@ fun ChatScreen(
                         }
                     },
                     actions = {
+                        // Atmosphere & Theme Picker button
+                        IconButton(
+                            onClick = onOpenThemeSelector,
+                            modifier = Modifier.testTag("open_theme_palette_button")
+                        ) {
+                            Icon(Icons.Default.Palette, contentDescription = "Atmosphere & Color", tint = MaterialTheme.colorScheme.primary)
+                        }
                         // Quick Breathing button
                         IconButton(
                             onClick = onOpenBreathing,
                             modifier = Modifier.testTag("open_breathing_button")
                         ) {
-                            Icon(Icons.Default.SelfImprovement, contentDescription = "Mindful Breathing", tint = MindCareTeal)
+                            Icon(Icons.Default.SelfImprovement, contentDescription = "Mindful Breathing", tint = MaterialTheme.colorScheme.primary)
                         }
                         // SOS Crisis Hotline button
                         IconButton(

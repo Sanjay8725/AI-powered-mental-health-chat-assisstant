@@ -35,6 +35,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.ui.components.BreathingExerciseDialog
 import com.example.ui.components.CrisisEscalationDialog
+import com.example.ui.components.ThemeSelectorDialog
 import com.example.ui.screens.AuthScreen
 import com.example.ui.screens.ChatScreen
 import com.example.ui.screens.DatasetManagerScreen
@@ -51,7 +52,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MyApplicationTheme {
+            val currentAppTheme by viewModel.currentAppTheme.collectAsStateWithLifecycle()
+            val isDarkMode by viewModel.isDarkMode.collectAsStateWithLifecycle()
+            MyApplicationTheme(theme = currentAppTheme, darkTheme = isDarkMode) {
                 MindCareApp(viewModel = viewModel)
             }
         }
@@ -66,6 +69,10 @@ fun MindCareApp(viewModel: MindCareViewModel) {
     val currentConversationId by viewModel.currentConversationId.collectAsStateWithLifecycle()
     val messages by viewModel.messages.collectAsStateWithLifecycle()
     val isGenerating by viewModel.isGenerating.collectAsStateWithLifecycle()
+
+    val currentAppTheme by viewModel.currentAppTheme.collectAsStateWithLifecycle()
+    val isDarkMode by viewModel.isDarkMode.collectAsStateWithLifecycle()
+    val showThemeModal by viewModel.showThemeModal.collectAsStateWithLifecycle()
 
     val showCrisisModal by viewModel.showCrisisModal.collectAsStateWithLifecycle()
     val showBreathingModal by viewModel.showBreathingModal.collectAsStateWithLifecycle()
@@ -185,10 +192,12 @@ fun MindCareApp(viewModel: MindCareViewModel) {
                     onNewConversation = { viewModel.startNewConversation() },
                     onDeleteConversation = { viewModel.deleteConversation(it) },
                     onOpenCrisis = { viewModel.toggleCrisisModal(true) },
-                    onOpenBreathing = { viewModel.toggleBreathingModal(true) }
+                    onOpenBreathing = { viewModel.toggleBreathingModal(true) },
+                    onOpenThemeSelector = { viewModel.toggleThemeModal(true) }
                 )
                 ScreenTab.MOOD -> MoodTrackerScreen(
                     moods = moods,
+                    isSupabaseConfigured = viewModel.supabaseClient.isConfigured,
                     onSaveMood = { mood, score, note ->
                         viewModel.recordMood(mood, score, note)
                     }
@@ -241,6 +250,16 @@ fun MindCareApp(viewModel: MindCareViewModel) {
             if (showBreathingModal) {
                 BreathingExerciseDialog(
                     onDismiss = { viewModel.toggleBreathingModal(false) }
+                )
+            }
+
+            if (showThemeModal) {
+                ThemeSelectorDialog(
+                    currentTheme = currentAppTheme,
+                    isDarkMode = isDarkMode,
+                    onSelectTheme = { viewModel.setAppColorTheme(it) },
+                    onToggleDarkMode = { viewModel.toggleDarkMode(it) },
+                    onDismiss = { viewModel.toggleThemeModal(false) }
                 )
             }
         }

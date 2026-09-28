@@ -4,67 +4,153 @@ import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme = darkColorScheme(
-    primary = MindCareTealLight,
-    onPrimary = Color(0xFF003833),
-    primaryContainer = Color(0xFF00504A),
-    onPrimaryContainer = Color(0xFF6FF7E8),
-    secondary = Sage80,
-    onSecondary = Color(0xFF1E283A),
-    secondaryContainer = Color(0xFF334155),
-    onSecondaryContainer = Color(0xFFE2E8F0),
-    tertiary = Lavender80,
-    onTertiary = Color(0xFF381E72),
-    background = DarkTealBackground,
-    surface = DarkTealSurface,
-    surfaceVariant = DarkTealCard,
-    onBackground = Color(0xFFE2ECEB),
-    onSurface = Color(0xFFE2ECEB),
-    error = Color(0xFFFFB4AB),
-    onError = Color(0xFF690005)
-)
+fun getCustomColorScheme(theme: AppColorTheme, isDark: Boolean) = when (theme) {
+    AppColorTheme.NORDIC_SAGE -> if (isDark) {
+        darkColorScheme(
+            primary = SagePrimaryLight,
+            onPrimary = Color(0xFF041E11),
+            primaryContainer = SagePrimary,
+            onPrimaryContainer = SageContainer,
+            secondary = SageAccent,
+            onSecondary = Color.White,
+            secondaryContainer = Color(0xFF4A3222),
+            onSecondaryContainer = Color(0xFFFFDCC7),
+            background = SageBackgroundDark,
+            surface = SageSurfaceDark,
+            surfaceVariant = SageSurfaceVariantDark,
+            onBackground = Color(0xFFE4EDE7),
+            onSurface = Color(0xFFE4EDE7),
+            outline = SageBorderDark,
+            error = CrisisRed
+        )
+    } else {
+        lightColorScheme(
+            primary = SagePrimary,
+            onPrimary = Color.White,
+            primaryContainer = SageContainer,
+            onPrimaryContainer = SageOnContainer,
+            secondary = SageAccent,
+            onSecondary = Color.White,
+            secondaryContainer = Color(0xFFFFE0D1),
+            onSecondaryContainer = Color(0xFF5A2708),
+            background = SageBackgroundLight,
+            surface = SageSurfaceLight,
+            surfaceVariant = SageSurfaceVariantLight,
+            onBackground = Color(0xFF1E2822),
+            onSurface = Color(0xFF1E2822),
+            outline = SageBorderLight,
+            error = CrisisRed
+        )
+    }
 
-private val LightColorScheme = lightColorScheme(
-    primary = MindCareTeal,
-    onPrimary = Color.White,
-    primaryContainer = Color(0xFFCCFBF1),
-    onPrimaryContainer = Color(0xFF115E59),
-    secondary = Color(0xFF475569),
-    onSecondary = Color.White,
-    secondaryContainer = Color(0xFFE2E8F0),
-    onSecondaryContainer = Color(0xFF0F172A),
-    tertiary = MindCarePurple,
-    onTertiary = Color.White,
-    background = LightTealBackground,
-    surface = LightTealSurface,
-    surfaceVariant = LightTealCard,
-    onBackground = Color(0xFF0F172A),
-    onSurface = Color(0xFF0F172A),
-    error = CrisisRed,
-    onError = Color.White
-)
+    AppColorTheme.CELESTIAL_TWILIGHT -> if (isDark) {
+        darkColorScheme(
+            primary = CelestialPrimaryLight,
+            onPrimary = Color(0xFF17103D),
+            primaryContainer = CelestialPrimary,
+            onPrimaryContainer = CelestialContainer,
+            secondary = CelestialAccent,
+            onSecondary = Color.White,
+            background = CelestialBackgroundDark,
+            surface = CelestialSurfaceDark,
+            surfaceVariant = CelestialSurfaceVariantDark,
+            onBackground = Color(0xFFECE7F7),
+            onSurface = Color(0xFFECE7F7),
+            error = CrisisRed
+        )
+    } else {
+        lightColorScheme(
+            primary = CelestialPrimary,
+            onPrimary = Color.White,
+            primaryContainer = CelestialContainer,
+            onPrimaryContainer = CelestialOnContainer,
+            secondary = CelestialAccent,
+            onSecondary = Color.White,
+            background = CelestialBackgroundLight,
+            surface = CelestialSurfaceLight,
+            surfaceVariant = CelestialSurfaceVariantLight,
+            onBackground = Color(0xFF1A162B),
+            onSurface = Color(0xFF1A162B),
+            error = CrisisRed
+        )
+    }
+
+    AppColorTheme.OCEAN_MIST -> if (isDark) {
+        darkColorScheme(
+            primary = OceanPrimaryLight,
+            onPrimary = Color(0xFF031A1D),
+            primaryContainer = OceanPrimary,
+            onPrimaryContainer = OceanContainer,
+            secondary = OceanAccent,
+            onSecondary = Color.White,
+            background = OceanBackgroundDark,
+            surface = OceanSurfaceDark,
+            surfaceVariant = OceanSurfaceVariantDark,
+            onBackground = Color(0xFFE2F0F2),
+            onSurface = Color(0xFFE2F0F2),
+            error = CrisisRed
+        )
+    } else {
+        lightColorScheme(
+            primary = OceanPrimary,
+            onPrimary = Color.White,
+            primaryContainer = OceanContainer,
+            onPrimaryContainer = OceanOnContainer,
+            secondary = OceanAccent,
+            onSecondary = Color.White,
+            background = OceanBackgroundLight,
+            surface = OceanSurfaceLight,
+            surfaceVariant = OceanSurfaceVariantLight,
+            onBackground = Color(0xFF102528),
+            onSurface = Color(0xFF102528),
+            error = CrisisRed
+        )
+    }
+
+    AppColorTheme.WARM_TERRACOTTA -> if (isDark) {
+        darkColorScheme(
+            primary = TerraPrimaryLight,
+            onPrimary = Color(0xFF280B03),
+            primaryContainer = TerraPrimary,
+            onPrimaryContainer = TerraContainer,
+            secondary = TerraAccent,
+            onSecondary = Color.White,
+            background = TerraBackgroundDark,
+            surface = TerraSurfaceDark,
+            surfaceVariant = TerraSurfaceVariantDark,
+            onBackground = Color(0xFFF3ECE6),
+            onSurface = Color(0xFFF3ECE6),
+            error = CrisisRed
+        )
+    } else {
+        lightColorScheme(
+            primary = TerraPrimary,
+            onPrimary = Color.White,
+            primaryContainer = TerraContainer,
+            onPrimaryContainer = TerraOnContainer,
+            secondary = TerraAccent,
+            onSecondary = Color.White,
+            background = TerraBackgroundLight,
+            surface = TerraSurfaceLight,
+            surfaceVariant = TerraSurfaceVariantLight,
+            onBackground = Color(0xFF2E1C15),
+            onSurface = Color(0xFF2E1C15),
+            error = CrisisRed
+        )
+    }
+}
 
 @Composable
 fun MyApplicationTheme(
+    theme: AppColorTheme = AppColorTheme.NORDIC_SAGE,
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = false, // Keep serene custom branding consistent
     content: @Composable () -> Unit,
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
+    val colorScheme = getCustomColorScheme(theme, darkTheme)
 
     MaterialTheme(
         colorScheme = colorScheme,

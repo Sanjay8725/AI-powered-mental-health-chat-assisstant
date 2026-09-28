@@ -199,7 +199,7 @@ class MindCareRepository(
         return aiResponse
     }
 
-    suspend fun recordMood(userId: String, mood: String, score: Int, note: String) {
+    suspend fun recordMood(userId: String, mood: String, score: Int, note: String): MoodEntity {
         val moodEntity = MoodEntity(
             id = UUID.randomUUID().toString(),
             userId = userId,
@@ -209,6 +209,22 @@ class MindCareRepository(
             createdAt = System.currentTimeMillis()
         )
         appDao.insertMood(moodEntity)
+
+        // Save to Supabase database with timestamp
+        if (supabaseClient.isConfigured) {
+            supabaseClient.syncMoodToSupabase(moodEntity)
+        }
+        return moodEntity
+    }
+
+    suspend fun syncMoodsFromRemote(userId: String): Result<Int> {
+        val result = supabaseClient.fetchRemoteMoods(userId)
+        return result.map { list ->
+            for (m in list) {
+                appDao.insertMood(m)
+            }
+            list.size
+        }
     }
 
     suspend fun importCsvStream(inputStream: InputStream, filename: String): CsvParseResult {
