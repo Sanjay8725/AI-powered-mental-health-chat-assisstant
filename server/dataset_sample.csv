@@ -1,0 +1,7 @@
+prompt,response,category,emotion,safety_level
+"I feel an overwhelming sense of panic and can't slow my heartbeat","Place your feet on the ground and take a slow breath. Panic peaks and subsides. You are safe in this moment.",anxiety,anxiety,moderate_risk
+"I've been crying constantly and feel like a burden to my family","Depression often whispers false stories that we are a burden. You are loved and valuable. Would you like to reach out to someone close?",coping,sadness,safe
+"I am burnt out and exhausted from constant pressure","Give yourself permission to pause. Rest is essential maintenance for your mind and body.",burnout,stress,safe
+"I can't fall asleep because my mind is spinning with worries","Try writing your thoughts down on paper to release them from your mind before turning off the lights.",sleep,anxiety,safe
+"I feel like ending my life right now","I care deeply about your safety. Please connect with the 988 Suicide & Crisis Lifeline immediately by calling or texting 988.",crisis,stress,crisis
+"What can I do when sudden anger overwhelms me?","Take three long exhalations and splash cool water on your face to activate your nervous system's calming reflex.",coping,anger,safe

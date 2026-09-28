@@ -1,0 +1,6 @@
+{
+  "name": "MindCare AI",
+  "description": "AI-Powered Mental Health and Wellness Chat Assistant with emotion tracking, RAG knowledge base, crisis safety guardrails, and dataset management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
